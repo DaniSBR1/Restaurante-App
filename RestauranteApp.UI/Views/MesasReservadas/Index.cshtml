@@ -1,0 +1,63 @@
+@model IEnumerable<RestauranteApp.Model.Mesa>
+@{
+    ViewData["Title"] = "Mesas Reservadas";
+}
+
+<div class="page-header">
+    <h1>Mesas Reservadas</h1>
+</div>
+
+<form asp-action="Index" method="get" class="filter-form">
+    <input type="text" name="filtroCliente" value="@ViewBag.FiltroCliente"
+           placeholder="Filtrar por nombre del cliente..." class="form-control" />
+    <button type="submit" class="btn btn-secondary">Buscar</button>
+    <a asp-action="Index" class="btn btn-outline">Limpiar</a>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">No hay mesas reservadas en este momento.</div>
+}
+else
+{
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>N° Mesa</th>
+                    <th>Estado</th>
+                    <th>Capacidad</th>
+                    <th>Sección</th>
+                    <th>Cliente</th>
+                    <th>Fecha Reserva</th>
+                    <th>Comensales</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var mesa in Model)
+                {
+                    <tr>
+                        <td data-label="N° Mesa"><strong>@mesa.NumeroMesa</strong></td>
+                        <td data-label="Estado"><span class="badge badge-warning">Reservada</span></td>
+                        <td data-label="Capacidad">@mesa.Capacidad personas</td>
+                        <td data-label="Sección">@mesa.Seccion</td>
+                        <td data-label="Cliente">@mesa.NombreCliente</td>
+                        <td data-label="Fecha Reserva">@mesa.FechaReserva?.ToString("dd/MM/yyyy")</td>
+                        <td data-label="Comensales">@mesa.CantidadComensales</td>
+                        <td data-label="Acciones" class="actions-cell">
+                            <a asp-action="Detalle" asp-route-id="@mesa.Id"
+                               class="btn btn-sm btn-secondary">Detalle</a>
+                            <form asp-action="Liberar" method="post" style="display:inline;"
+                                  onsubmit="return confirm('¿Desea liberar la mesa #@mesa.NumeroMesa?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@mesa.Id" />
+                                <button type="submit" class="btn btn-sm btn-warning">Liberar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

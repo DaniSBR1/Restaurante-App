@@ -1,0 +1,53 @@
+@model IEnumerable<RestauranteApp.Model.Mesa>
+@{
+    ViewData["Title"] = "Mesas Disponibles";
+}
+
+<div class="page-header">
+    <h1>Mesas Disponibles</h1>
+</div>
+
+<form asp-action="Index" method="get" class="filter-form">
+    <input type="number" name="filtroNumero" value="@ViewBag.FiltroNumero"
+           placeholder="Filtrar por número de mesa..." class="form-control" min="1" />
+    <button type="submit" class="btn btn-secondary">Buscar</button>
+    <a asp-action="Index" class="btn btn-outline">Limpiar</a>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">No hay mesas disponibles en este momento.</div>
+}
+else
+{
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>N° Mesa</th>
+                    <th>Estado</th>
+                    <th>Capacidad</th>
+                    <th>Sección</th>
+                    <th>Precio / Persona</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var mesa in Model)
+                {
+                    <tr>
+                        <td data-label="N° Mesa"><strong>@mesa.NumeroMesa</strong></td>
+                        <td data-label="Estado"><span class="badge badge-success">Disponible</span></td>
+                        <td data-label="Capacidad">@mesa.Capacidad personas</td>
+                        <td data-label="Sección">@mesa.Seccion</td>
+                        <td data-label="Precio / Persona">₡@mesa.PrecioPorPersona.ToString("N2")</td>
+                        <td data-label="Acción">
+                            <a asp-action="Reservar" asp-route-id="@mesa.Id"
+                               class="btn btn-sm btn-primary">Reservar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

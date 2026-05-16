@@ -1,0 +1,60 @@
+@model IEnumerable<RestauranteApp.Model.Mesa>
+@{
+    ViewData["Title"] = "Registro de Mesas";
+}
+
+<div class="page-header">
+    <h1>Registro de Mesas</h1>
+    <a asp-action="Agregar" class="btn btn-primary">+ Agregar Mesa</a>
+</div>
+
+<form asp-action="Index" method="get" class="filter-form">
+    <input type="number" name="filtroNumero" value="@ViewBag.FiltroNumero"
+           placeholder="Filtrar por número de mesa..." class="form-control" min="1" />
+    <button type="submit" class="btn btn-secondary">Buscar</button>
+    <a asp-action="Index" class="btn btn-outline">Limpiar</a>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">No se encontraron mesas registradas.</div>
+}
+else
+{
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>N° Mesa</th>
+                    <th>Estado</th>
+                    <th>Capacidad</th>
+                    <th>Sección</th>
+                    <th>Precio / Persona</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var mesa in Model)
+                {
+                    <tr>
+                        <td data-label="N° Mesa"><strong>@mesa.NumeroMesa</strong></td>
+                        <td data-label="Estado">
+                            <span class="badge @(mesa.Estado == 1 ? "badge-success" : "badge-warning")">
+                                @(mesa.Estado == 1 ? "Disponible" : "Reservada")
+                            </span>
+                        </td>
+                        <td data-label="Capacidad">@mesa.Capacidad personas</td>
+                        <td data-label="Sección">@mesa.Seccion</td>
+                        <td data-label="Precio / Persona">₡@mesa.PrecioPorPersona.ToString("N2")</td>
+                        <td data-label="Acciones" class="actions-cell">
+                            <a asp-action="Editar" asp-route-id="@mesa.Id"
+                               class="btn btn-sm btn-secondary">Editar</a>
+                            <a asp-action="Eliminar" asp-route-id="@mesa.Id"
+                               class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

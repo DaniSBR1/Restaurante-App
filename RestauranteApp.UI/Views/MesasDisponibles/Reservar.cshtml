@@ -1,0 +1,99 @@
+@model RestauranteApp.UI.Models.ReservaViewModel
+@{
+    ViewData["Title"] = "Reservar Mesa";
+}
+
+<div class="page-header">
+    <h1>Reservar Mesa #@Model.NumeroMesa</h1>
+    <a asp-action="Index" class="btn btn-outline">← Volver</a>
+</div>
+
+<div class="form-card">
+    <form asp-action="Reservar" method="post" id="reservaForm">
+        @Html.AntiForgeryToken()
+        <input asp-for="MesaId" type="hidden" />
+        <input asp-for="NumeroMesa" type="hidden" />
+        <input asp-for="Capacidad" type="hidden" />
+        <input asp-for="PrecioPorPersona" type="hidden" />
+
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+        {
+            <div class="alert alert-danger">@ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage</div>
+        }
+
+        <div class="form-group">
+            <label asp-for="IdentificacionCliente">Identificación del Cliente *</label>
+            <input asp-for="IdentificacionCliente" class="form-control" placeholder="Cédula o pasaporte..." />
+            <span asp-validation-for="IdentificacionCliente" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NombreCliente">Nombre del Cliente *</label>
+            <input asp-for="NombreCliente" class="form-control" placeholder="Nombre completo..." />
+            <span asp-validation-for="NombreCliente" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="FechaReserva">Fecha de la Reserva *</label>
+            <input asp-for="FechaReserva" class="form-control" type="date"
+                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="FechaReserva" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CantidadComensales">Cantidad de Comensales * (máx. @Model.Capacidad)</label>
+            <input asp-for="CantidadComensales" class="form-control" type="number"
+                   min="1" max="@Model.Capacidad" id="cantidadComensales" />
+            <span asp-validation-for="CantidadComensales" class="text-danger"></span>
+        </div>
+
+        <!-- Preview dinámico del depósito -->
+        <div class="deposit-preview" id="depositPreview">
+            <div class="deposit-label">Depósito de Garantía estimado</div>
+            <div class="deposit-amount" id="depositAmount">₡0.00</div>
+            <div class="deposit-note" id="depositNote"></div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
+            <a asp-action="Index" class="btn btn-outline">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    (function () {
+        const precio = @Model.PrecioPorPersona;
+        const capacidad = @Model.Capacidad;
+        const input = document.getElementById('cantidadComensales');
+        const preview = document.getElementById('depositPreview');
+        const amountEl = document.getElementById('depositAmount');
+        const noteEl = document.getElementById('depositNote');
+
+        function calcular(comensales) {
+            if (!comensales || comensales <= 0) return { monto: 0, pct: 0 };
+            let pct;
+            if (comensales < 4)      pct = 1.00;
+            else if (comensales < 8) pct = 0.75;
+            else                     pct = 0.50;
+            return { monto: precio * comensales * pct, pct: pct * 100 };
+        }
+
+        function actualizar() {
+            const val = parseInt(input.value, 10);
+            if (!val || val <= 0) {
+                preview.classList.remove('visible');
+                return;
+            }
+            const { monto, pct } = calcular(val);
+            amountEl.textContent = '₡' + monto.toLocaleString('es-CR', { minimumFractionDigits: 2 });
+            noteEl.textContent = `Corresponde al ${pct}% del total (${val} comensales × ₡${precio.toLocaleString('es-CR', { minimumFractionDigits: 2 })})`;
+            preview.classList.add('visible');
+        }
+
+        input.addEventListener('input', actualizar);
+
+        // Disparar si ya hay un valor (p.ej. al volver con error)
+        if (input.value) actualizar();
+    })();
+</script>

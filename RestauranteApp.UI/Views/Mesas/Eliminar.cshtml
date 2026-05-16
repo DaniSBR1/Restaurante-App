@@ -1,0 +1,42 @@
+@model RestauranteApp.Model.Mesa
+@{
+    ViewData["Title"] = "Eliminar Mesa";
+}
+
+<div class="page-header">
+    <h1>Eliminar Mesa</h1>
+    <a asp-action="Index" class="btn btn-outline">← Volver</a>
+</div>
+
+<div class="confirm-card">
+    <div class="confirm-icon">🗑️</div>
+    <h2>¿Está seguro que desea eliminar esta mesa?</h2>
+
+    <div class="mesa-info">
+        <p><strong>N° de Mesa:</strong> @Model.NumeroMesa</p>
+        <p><strong>Capacidad:</strong> @Model.Capacidad personas</p>
+        <p><strong>Sección:</strong> @Model.Seccion</p>
+        <p><strong>Precio por Persona:</strong> ₡@Model.PrecioPorPersona.ToString("N2")</p>
+        <p><strong>Estado:</strong>
+            <span class="badge @(Model.Estado == 1 ? "badge-success" : "badge-warning")">
+                @(Model.Estado == 1 ? "Disponible" : "Reservada")
+            </span>
+        </p>
+    </div>
+
+    @if (Model.Estado == (int)RestauranteApp.Model.EstadoMesa.Reservada)
+    {
+        <div class="alert alert-warning">
+            ⚠️ Esta mesa tiene una reserva activa. Al eliminarla se perderán los datos del cliente.
+        </div>
+    }
+
+    <form asp-action="Eliminar" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            <a asp-action="Index" class="btn btn-outline">Cancelar</a>
+        </div>
+    </form>
+</div>

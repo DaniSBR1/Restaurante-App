@@ -1,0 +1,49 @@
+@model RestauranteApp.Model.Mesa
+@{
+    ViewData["Title"] = "Agregar Mesa";
+}
+
+<div class="page-header">
+    <h1>Agregar Mesa</h1>
+    <a asp-action="Index" class="btn btn-outline">← Volver</a>
+</div>
+
+<div class="form-card">
+    <form asp-action="Agregar" method="post">
+        @Html.AntiForgeryToken()
+
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+        {
+            <div class="alert alert-danger">@ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage</div>
+        }
+
+        <div class="form-group">
+            <label asp-for="NumeroMesa">Número de Mesa *</label>
+            <input asp-for="NumeroMesa" class="form-control" type="number" min="1" placeholder="Ej: 1, 2, 3..." />
+            <span asp-validation-for="NumeroMesa" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Capacidad">Capacidad (personas) *</label>
+            <input asp-for="Capacidad" class="form-control" type="number" min="1" placeholder="Ej: 4, 6, 8..." />
+            <span asp-validation-for="Capacidad" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Seccion">Sección *</label>
+            <input asp-for="Seccion" class="form-control" placeholder="Ej: Terraza, Interior, VIP..." />
+            <span asp-validation-for="Seccion" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PrecioPorPersona">Precio por Persona (₡) *</label>
+            <input asp-for="PrecioPorPersona" class="form-control" type="number" step="0.01" min="0.01" placeholder="Ej: 5000.00" />
+            <span asp-validation-for="PrecioPorPersona" class="text-danger"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Mesa</button>
+            <a asp-action="Index" class="btn btn-outline">Cancelar</a>
+        </div>
+    </form>
+</div>

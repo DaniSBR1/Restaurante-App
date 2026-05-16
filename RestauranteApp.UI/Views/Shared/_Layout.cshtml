@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Restaurante</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a class="navbar-brand" asp-controller="Mesas" asp-action="Index">🍽️ RestauranteApp</a>
+            <ul class="navbar-nav">
+                <li><a asp-controller="Mesas" asp-action="Index">Registro de Mesas</a></li>
+                <li><a asp-controller="MesasDisponibles" asp-action="Index">Mesas Disponibles</a></li>
+                <li><a asp-controller="MesasReservadas" asp-action="Index">Mesas Reservadas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert alert-success">@TempData["Mensaje"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <p>&copy; @DateTime.Now.Year — Sistema de Reservas de Restaurante</p>
+    </footer>
+</body>
+</html>

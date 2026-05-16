@@ -1,0 +1,61 @@
+@model RestauranteApp.Model.Mesa
+@{
+    ViewData["Title"] = "Detalle de Reserva";
+}
+
+<div class="page-header">
+    <h1>Detalle — Mesa #@Model.NumeroMesa</h1>
+    <a asp-action="Index" class="btn btn-outline">← Volver</a>
+</div>
+
+<div class="detail-card">
+    <div class="detail-section">
+        <h2>Información de la Mesa</h2>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">N° de Mesa</span>
+                <span class="detail-value">@Model.NumeroMesa</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Estado</span>
+                <span class="detail-value">
+                    <span class="badge badge-warning">Reservada</span>
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Capacidad</span>
+                <span class="detail-value">@Model.Capacidad personas</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Sección</span>
+                <span class="detail-value">@Model.Seccion</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2>Información del Cliente</h2>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">Nombre del Cliente</span>
+                <span class="detail-value">@Model.NombreCliente</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Identificación</span>
+                <span class="detail-value">@Model.IdentificacionCliente</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Fecha de Reserva</span>
+                <span class="detail-value">@Model.FechaReserva?.ToString("dd/MM/yyyy")</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Cantidad de Comensales</span>
+                <span class="detail-value">@Model.CantidadComensales</span>
+            </div>
+            <div class="detail-item highlight">
+                <span class="detail-label">Depósito de Garantía</span>
+                <span class="detail-value deposit">₡@Model.DepositoDeGarantia?.ToString("N2")</span>
+            </div>
+        </div>
+    </div>
+</div>
